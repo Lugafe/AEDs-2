@@ -47,38 +47,44 @@ public class Q5 {
 
     private static String expression(String palavra) {
         String nova = "";
-        
+        Boolean first = false;
         for (int i = palavra.length(); i > 0; i--) {
+            // para quando acha um parenteses de abertura
             if (palavra.charAt(i) == '(') {
+                String troca = "";
+                troca += palavra.charAt(i+1);// cria uma string com valor do primeiro digito da expressao
+                int p = i;
+                while (palavra.charAt(i) != ')' || first == false) {// enquanto for diferente do parenteses que fecha ele continua copiando
+                    first = true;                                  
+                    nova += palavra.charAt(i);
+                    p++;
+                }
+                int t = nova.length();
                 switch (palavra.charAt(i - 1)) {
                     case 't':
-                        if (palavra.charAt(i + 1) == 1) {
-                            nova += '0';
+                        if (troca.charAt(1) == '0') {//caso a letra antes seja t troca o valor recebido para o inverso
+                            nova = "1";
                         } else {
-                            nova += '1';
+                            nova = "0";
                         }
-                    break;
-                    case 'd':
-                        if (palavra.charAt(i + 1) == '0') {
-                            nova += '0';
-                        } else if (palavra.charAt(i + 3) == '0') {
-                            nova += '0';
+                        break;
+                    case 'd'://caso a letra antes seja d troca fazendo a operação and
+                        if (troca.charAt(0) == '0' || nova.charAt(t - 1) == '0') {
+                            nova = "1";
                         } else {
-                            nova += '1';
+                            nova = "0";
                         }
-                    break;
-                    case 'r':
-                        if (palavra.charAt(i + 1) == '1') {
-                            nova += '1';
-                        } else if (palavra.charAt(i + 3) == '1') {
-                            nova += '1';
+                        break;
+                    case 'r'://caso a letra antes seja r troca fazendo a operação or
+                        if (troca.charAt(0) == '1' || nova.charAt(t - 1) == '1') {
+                            nova = "1";
                         } else {
-                            nova += '0';
+                            nova = "0";
                         }
-                    break;
+                        break;
                     default:
-                        nova += palavra.charAt(i);
-                    break;
+
+                        break;
                 }
             }
         }
