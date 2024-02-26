@@ -3,13 +3,13 @@ import java.util.*;
 public class Q3 {
 
     public static void main(String[] args) {
-        
+        //MyIO.setCharset("UTF-8");
         String palavra = MyIO.readLine();
     
         do {
             if (!palavra.equalsIgnoreCase("FIM")) {
                  palavra = ciframento(palavra);
-                 System.out.println(palavra);
+                 MyIO.println(palavra);
             }
             palavra = MyIO.readLine();            
         } while (!palavra.equalsIgnoreCase("FIM"));

@@ -5,6 +5,7 @@
 
 bool palindrom(char *p)
 {
+    
     int i = 0;
     int fim = strlen(p) - 1;
     bool ok = true;
@@ -13,7 +14,7 @@ bool palindrom(char *p)
     {
         if (p[i] != p[fim])
         {
-            ok = false;
+            ok = false;            
         }
         fim--;
         i++;
@@ -22,7 +23,7 @@ bool palindrom(char *p)
 }
 
 int main()
-{
+{   
     char *p = (char *)malloc(10 * sizeof(char));
     scanf("%s", p);
     do

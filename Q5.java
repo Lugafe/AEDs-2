@@ -46,6 +46,7 @@ public class Q5 {
     }
 
     private static String expression(String palavra) {
+        MyIO.setCharset("UTF-8");
         String nova = "";
         Boolean first = false;
         for (int i = palavra.length(); i > 0; i--) {

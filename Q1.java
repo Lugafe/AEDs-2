@@ -3,6 +3,7 @@ import java.util.*;;
 
 public class Q1 {
     public static void main(String[] args) {
+        MyIO.setCharset("UTF-8");
         String palavra = MyIO.readLine();
 
         do {
