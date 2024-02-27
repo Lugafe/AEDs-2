@@ -25,7 +25,8 @@ bool palindrom(char *p)
 int main()
 {   
     char *p = (char *)malloc(10 * sizeof(char));
-    scanf("%s", p);
+    scanf("%[^\n]", p);
+    getchar(); // Limpa o buffer de entrada
     do
     {
         if (strcmp(p, "FIM") != 0)
@@ -39,7 +40,8 @@ int main()
                 printf("NAO\n");
             }
         }
-        scanf("%s", p);
+        scanf("%[^\n]", p);
+        getchar(); // Limpa o buffer de entrada
 
     } while (strcmp(p, "FIM") != 0);
 
