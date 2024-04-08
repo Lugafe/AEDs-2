@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-typedef struct personagem
+typedef struct 
 {
     char id[500];
     char name[500];
@@ -23,7 +23,7 @@ typedef struct personagem
     char gender[500];
     char hairColour[500];
     bool wizard;
-};
+} personagem;
 
 
 int main(){
