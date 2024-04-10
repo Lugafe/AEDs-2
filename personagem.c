@@ -29,6 +29,7 @@ typedef struct
 int main(){
     
     char S[500];
+    
     char *ptr;
 
     FILE *fptr;
