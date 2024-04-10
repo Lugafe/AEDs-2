@@ -39,6 +39,7 @@ class Personagem {
    String id;
    String name;
    String alternate_names;
+   //Lista alternate_names = new Lista();
    String house;
    String ancestry;
    String species;
@@ -48,6 +49,7 @@ class Personagem {
    String actorName;
    boolean alive;
    String alternate_actors;
+   //Lista alternate_actors = new Lista();
    String dateOfBirth;
    int yearOfBirth;
    String eyeColour;
@@ -59,9 +61,23 @@ class Personagem {
    // hogwartsStudent,actorName,alive,alternate_actors,dateOfBirth,yearOfBirth,
    // eyeColour,gender,hairColour,wizard
    public void ler(String line) {
+      int c = 0;
+      int i = 0;
+      String atores = "";
       //separar a linha
       String separa[] = line.split(",");
-      //fazer
+      if (separa[2].charAt(1) == '[') {         
+         while (separa[2].charAt(i) != ']') {
+            if (separa[2].charAt(i) != '"' || separa[2].charAt(i) != '[' || separa[2].charAt(i) != '[') {
+               atores += separa[2].charAt(i);
+               i++;            
+            }
+         }
+      }
+      i++; 
+      this.id = separa[0];
+      this.name = separa[1];
+      this.alternate_actors = atores;;
       
       
       
