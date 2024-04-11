@@ -61,26 +61,184 @@ class Personagem {
    // hogwartsStudent,actorName,alive,alternate_actors,dateOfBirth,yearOfBirth,
    // eyeColour,gender,hairColour,wizard
    public void ler(String line) {
-      int c = 0;
-      int i = 0;
+      int c = 0; boolean ok = false;
+      
       String atores = "";
       //separar a linha
+      //"9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8,Harry Potter,"'The Boy Who Lived', 'The Chosen O[ne', 'Undesirable No. 1', 'Potty']",Gryffindor,half-blood,human,stag,False,True,Daniel Radcliffe,True,[],31-07-1980,1980,green,male,black,True"
       String separa[] = line.split(",");
-      if (separa[2].charAt(1) == '[') {         
-         while (i < separa[2].length()-1 && separa[2].charAt(i) != ']') {
-            if (separa[2].charAt(i) != '"' || separa[2].charAt(i) != '[' || separa[2].charAt(i) != '[') {
-               atores += separa[2].charAt(i);
-               i++;            
+      for (int i = 0; i < separa.length; i++) {
+         
+         if (separa[i].charAt(1) == '[') {  
+            do {
+               for (int j = 0; j < separa[i].length(); j++) {
+                  if (ok) {
+                     atores += separa[i].charAt(j);                  
+                  }
+               }
+               i++;
+            } while (separa[i].charAt(separa[i].length()-2) != ']');        
+            /*        
+            while (i < separa[2].length()-1 && separa[2].charAt(i) != ']') {
+               if (separa[2].charAt(i) != '"' || separa[2].charAt(i) != '[' || separa[2].charAt(i) != '[') {
+                  atores += separa[2].charAt(i);
+                  i++;            
+               }
             }
+            */
          }
       }
-      i++; 
+      
       this.id = separa[0];
       this.name = separa[1];
       this.alternate_actors = atores;;
+//"9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8Harry Potter"['The Boy Who Lived' 'The Chosen One' 'Undesirable No. 1'"
       
       
-      
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public String getAlternate_names() {
+      return alternate_names;
+   }
+
+   public void setAlternate_names(String alternate_names) {
+      this.alternate_names = alternate_names;
+   }
+
+   public String getHouse() {
+      return house;
+   }
+
+   public void setHouse(String house) {
+      this.house = house;
+   }
+
+   public String getAncestry() {
+      return ancestry;
+   }
+
+   public void setAncestry(String ancestry) {
+      this.ancestry = ancestry;
+   }
+
+   public String getSpecies() {
+      return species;
+   }
+
+   public void setSpecies(String species) {
+      this.species = species;
+   }
+
+   public String getPatronus() {
+      return patronus;
+   }
+
+   public void setPatronus(String patronus) {
+      this.patronus = patronus;
+   }
+
+   public boolean isHogwartsStaff() {
+      return hogwartsStaff;
+   }
+
+   public void setHogwartsStaff(boolean hogwartsStaff) {
+      this.hogwartsStaff = hogwartsStaff;
+   }
+
+   public boolean isHogwartsStudent() {
+      return hogwartsStudent;
+   }
+
+   public void setHogwartsStudent(boolean hogwartsStudent) {
+      this.hogwartsStudent = hogwartsStudent;
+   }
+
+   public String getActorName() {
+      return actorName;
+   }
+
+   public void setActorName(String actorName) {
+      this.actorName = actorName;
+   }
+
+   public boolean isAlive() {
+      return alive;
+   }
+
+   public void setAlive(boolean alive) {
+      this.alive = alive;
+   }
+
+   public String getAlternate_actors() {
+      return alternate_actors;
+   }
+
+   public void setAlternate_actors(String alternate_actors) {
+      this.alternate_actors = alternate_actors;
+   }
+
+   public String getDateOfBirth() {
+      return dateOfBirth;
+   }
+
+   public void setDateOfBirth(String dateOfBirth) {
+      this.dateOfBirth = dateOfBirth;
+   }
+
+   public int getYearOfBirth() {
+      return yearOfBirth;
+   }
+
+   public void setYearOfBirth(int yearOfBirth) {
+      this.yearOfBirth = yearOfBirth;
+   }
+
+   public String getEyeColour() {
+      return eyeColour;
+   }
+
+   public void setEyeColour(String eyeColour) {
+      this.eyeColour = eyeColour;
+   }
+
+   public String getGender() {
+      return gender;
+   }
+
+   public void setGender(String gender) {
+      this.gender = gender;
+   }
+
+   public String getHairColour() {
+      return hairColour;
+   }
+
+   public void setHairColour(String hairColour) {
+      this.hairColour = hairColour;
+   }
+
+   public boolean isWizard() {
+      return wizard;
+   }
+
+   public void setWizard(boolean wizard) {
+      this.wizard = wizard;
    }
 }
 
