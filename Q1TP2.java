@@ -38,8 +38,7 @@ public class Q1TP2 {
 class Personagem {
    String id;
    String name;
-   String alternate_names;
-   //Lista alternate_names = new Lista();
+   String alternate_names;   
    String house;
    String ancestry;
    String species;
@@ -48,8 +47,7 @@ class Personagem {
    boolean hogwartsStudent;
    String actorName;
    boolean alive;
-   String alternate_actors;
-   //Lista alternate_actors = new Lista();
+   String alternate_actors;   
    String dateOfBirth;
    int yearOfBirth;
    String eyeColour;
@@ -61,40 +59,86 @@ class Personagem {
    // hogwartsStudent,actorName,alive,alternate_actors,dateOfBirth,yearOfBirth,
    // eyeColour,gender,hairColour,wizard
    public void ler(String line) {
-      int c = 0; boolean ok = false;
-      
-      String atores = "";
-      //separar a linha
-      //"9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8,Harry Potter,"'The Boy Who Lived', 'The Chosen O[ne', 'Undesirable No. 1', 'Potty']",Gryffindor,half-blood,human,stag,False,True,Daniel Radcliffe,True,[],31-07-1980,1980,green,male,black,True"
+      int c = 0;
+      boolean ok = true;
+      String atores = "";      
+      // separar a linha
+      // "9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8,Harry Potter,"['The Boy Who Lived', 'The Chosen One', 'Undesirable No. 1', 'Potty']",Gryffindor,half-blood,human,stag,False,True,Daniel Radcliffe,True,[],31-07-1980,1980,green,male,black,True"
+      //"af95bd8a-dfae-45bb-bc69-533860d34129,Draco Malfoy,[],Slytherin,pure-blood,human,,False,True,Tom Felton,True,[],05-06-1980,1980,grey,male,blonde,True"
       String separa[] = line.split(",");
-      for (int i = 0; i < separa.length; i++) {
-         
-         if (separa[i].charAt(1) == '[') {  
-            do {
+      for (int i = 0; i < separa.length - 1; i++) {
+         if (separa[i].length() > 0 && separa[i].charAt(1) == '[') {
+            while (ok) {
                for (int j = 0; j < separa[i].length(); j++) {
-                  if (ok) {
-                     atores += separa[i].charAt(j);                  
+                  atores += separa[i].charAt(j);
+                  if (separa[i].charAt(j) == ']') {
+                     ok = false;
+                     break;
                   }
                }
+               c++;
                i++;
-            } while (separa[i].charAt(separa[i].length()-2) != ']');        
-            /*        
-            while (i < separa[2].length()-1 && separa[2].charAt(i) != ']') {
-               if (separa[2].charAt(i) != '"' || separa[2].charAt(i) != '[' || separa[2].charAt(i) != '[') {
-                  atores += separa[2].charAt(i);
-                  i++;            
-               }
             }
-            */
+            ;
+
          }
       }
-      
+      if (c != 0) {
+         c--;         
+      }
+      atores = copia(atores);
       this.id = separa[0];
       this.name = separa[1];
-      this.alternate_actors = atores;;
-//"9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8Harry Potter"['The Boy Who Lived' 'The Chosen One' 'Undesirable No. 1'"
-      
-      
+      this.alternate_actors = atores;      
+      System.out.println(atores);
+      this.house= separa[3+c];
+      this.ancestry= separa[4+c];
+      this.species= separa[5+c];
+      this.patronus= separa[6+c];
+
+      if (separa[7+c].equalsIgnoreCase("True")) {         
+         this.hogwartsStaff= true;
+      }else{this.hogwartsStaff= false;}
+      if (separa[8+c].equalsIgnoreCase("True")) {         
+         this.hogwartsStudent= true;
+      }else{this.hogwartsStudent= false;}
+      if (separa[10+c].equalsIgnoreCase("True")) {         
+         this.alive= true;
+      }else{this.alive= false;}
+      if (separa[17+c].equalsIgnoreCase("True")) {         
+         this.wizard= true;
+      }else{this.wizard= false;}
+       
+      this.actorName= separa[9+c];      
+      this.alternate_actors= separa[11+c];     
+      this.dateOfBirth= separa[12+c];
+      if (isNumber(separa[13+c])) {
+         this.yearOfBirth= Integer.parseInt(separa[13+c]);         
+      }else{this.yearOfBirth = 0000;}
+      this.eyeColour= separa[14+c];
+      this.gender= separa[15+c];
+      this.hairColour= separa[16+c];
+      System.out.println("ok");
+
+   }
+
+   private String copia(String atores) {
+      String nova = "";
+      for (int i = 0; i < atores.length(); i++) {
+         if (atores.charAt(i) != '"' || atores.charAt(i) != '[') {
+            nova+=atores.charAt(i);
+         }
+      }
+      return nova;
+   }
+
+   private boolean isNumber(String string) {
+      for (int i = 0; i < string.length(); i++) {
+         if (string.charAt(i) >= '0' && string.charAt(i) <= '9') {
+            return true;
+         }
+      }
+      return false;
    }
 
    public String getId() {
@@ -240,6 +284,23 @@ class Personagem {
    public void setWizard(boolean wizard) {
       this.wizard = wizard;
    }
+   /*
+   public Personagem clone() {
+      Personagem clone = new Personagem();
+  
+      clone.nome = this.nome;
+      clone.altura = this.altura;
+      clone.peso = this.peso;
+      clone.corDoCabelo = this.corDoCabelo;
+      clone.corDaPele = this.corDaPele;
+      clone.corDosOlhos = this.corDosOlhos;
+      clone.anoDoNascimento = this.anoDoNascimento;
+      clone.genero = this.genero;
+      clone.homeWorld = this.homeWorld;
+  
+      return clone;
+    }
+    */
 }
 
 class Lista {
@@ -418,3 +479,13 @@ class Lista {
       return retorno;
    }
 }
+
+/*
+ * while (i < separa[2].length()-1 && separa[2].charAt(i) != ']') {
+ * if (separa[2].charAt(i) != '"' || separa[2].charAt(i) != '[' ||
+ * separa[2].charAt(i) != '[') {
+ * atores += separa[2].charAt(i);
+ * i++;
+ * }
+ * }
+ */
