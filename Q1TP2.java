@@ -1,27 +1,24 @@
 import java.io.IOException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.io.FileReader;
+
 
 public class Q1TP2 {
    public static void main(String[] args) throws Exception {
-      // File file = new File("characters.csv"); ;
+      // File file = new File("characters.csv"); 
+      Scanner sc = new Scanner(System.in);
       Lista personagens = new Lista();
       MyIO.setCharset("UTF-8");
       String ids[] = new String[500];
       String s = "";int i = 0;
       // recebe os valores dos ids
       personagens = arquivo();
-      s = MyIO.readLine();
+      s = sc.nextLine();
       do {    
          if (!s.equalsIgnoreCase("FIM")) {
             ids[i] = s;
             i++;            
-            s = MyIO.readLine();
+            s = sc.nextLine();
          }          
       } while (!s.equalsIgnoreCase("FIM"));
       
