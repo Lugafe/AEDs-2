@@ -1,14 +1,14 @@
+package TP2;
 import java.io.IOException;
 import java.io.File;
 import java.util.*;
-
 
 public class Q1TP2 {
    public static void main(String[] args) throws Exception {
       // File file = new File("characters.csv"); 
       Scanner sc = new Scanner(System.in);
       Lista personagens = new Lista();
-      MyIO.setCharset("UTF-8");
+      
       String ids[] = new String[500];
       String s = "";int i = 0;
       // recebe os valores dos ids

@@ -1,14 +1,18 @@
+package TP2;
 import java.io.IOException;
 import java.io.File;
 import java.util.*;
 
 public class J2 {
+    static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) throws Exception {
         // File file = new File("characters.csv");
-        Scanner sc = new Scanner(System.in);
+        // Scanner sc = new Scanner(System.in);
+
         Lista personagens = new Lista();
         Personagem p = new Personagem();
-        Lista personagens2 = new Lista();         
+        Lista personagens2 = new Lista();
         String s = "";
         int i = 0;
         // recebe os valores dos ids
@@ -33,17 +37,18 @@ public class J2 {
                 s = sc.nextLine();
             }
         } while (!s.equalsIgnoreCase("FIM"));
-
+        sc.close();
     }
 
     public static Lista arquivo() throws Exception {
         File file = new File("characters.csv");
+        //File file = new File("/tmp/characters.csv");
         Lista personagens = new Lista();
         Personagem p = new Personagem();
         String line;
         try {
             Scanner sc = new Scanner(file);
-            while (sc.hasNextLine()) {
+            while (sc.hasNextLine()) {                
                 p.ler(sc.nextLine());
                 personagens.inserirFim(p);
                 p = new Personagem();
@@ -85,97 +90,96 @@ class Personagem {
         boolean ok2 = true;
         String atores = "";
         String atores2 = "";
-        if (line.equalsIgnoreCase("FIM")) {
-            System.out.println("oh hell nah");
-        }
-        // separar a linha
-        String separa[] = line.split(",");
-        for (int i = 0; i < separa.length - 1; i++) {
-            if (separa[i].length() > 0 && separa[i].charAt(1) == '[') {
-                while (ok) {
-                    for (int j = 0; j < separa[i].length(); j++) {
-                        atores += separa[i].charAt(j);
-                        if (separa[i].charAt(j) == ']') {
-                            ok = false;
-                            break;
-                        }
-                    }
-                    c++;
-                    i++;
-                }
-                // indica que passou pelo primeiro e agora o proximo pode definir os atores
-                ok2 = true;
-                c2 = i;
-            }
-        }
-        if (ok2) {
-            ok = true;
-            for (int i = c2; i < separa.length - 1; i++) {
+        if (line.length() >= 14) {
+
+            // separar a linha
+            String separa[] = line.split(";");
+            for (int i = 0; i < separa.length - 1; i++) {
                 if (separa[i].length() > 0 && separa[i].charAt(1) == '[') {
                     while (ok) {
                         for (int j = 0; j < separa[i].length(); j++) {
-                            atores2 += separa[i].charAt(j);
+                            atores += separa[i].charAt(j);
                             if (separa[i].charAt(j) == ']') {
                                 ok = false;
                                 break;
                             }
                         }
-                        c3++;
+                        c++;
                         i++;
+                    }
+                    // indica que passou pelo primeiro e agora o proximo pode definir os atores
+                    ok2 = true;
+                    c2 = i;
+                }
+            }
+            if (ok2) {
+                ok = true;
+                for (int i = c2; i < separa.length - 1; i++) {
+                    if (separa[i].length() > 0 && separa[i].charAt(1) == '[') {
+                        while (ok) {
+                            for (int j = 0; j < separa[i].length(); j++) {
+                                atores2 += separa[i].charAt(j);
+                                if (separa[i].charAt(j) == ']') {
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                            c3++;
+                            i++;
+                        }
                     }
                 }
             }
-        }
 
-        if (c != 0) {
-            c--;
-        }
-        if (c3 != 0) {
-            c--;
-        }
-        this.id = separa[0];
-        this.name = separa[1];
-        this.house = separa[3 + c];
-        this.ancestry = separa[4 + c];
-        this.species = separa[5 + c];
-        this.patronus = separa[6 + c];
+            if (c != 0) {
+                c--;
+            }
+            if (c3 != 0) {
+                c--;
+            }
+            this.id = separa[0];
+            this.name = separa[1];
+            this.house = separa[3 + c];
+            this.ancestry = separa[4 + c];
+            this.species = separa[5 + c];
+            this.patronus = separa[6 + c];
 
-        if (separa[7 + c].equalsIgnoreCase("True")) {
-            this.hogwartsStaff = true;
-        } else {
-            this.hogwartsStaff = false;
-        }
-        if (separa[8 + c].equalsIgnoreCase("True")) {
-            this.hogwartsStudent = true;
-        } else {
-            this.hogwartsStudent = false;
-        }
-        if (separa[10 + c].equalsIgnoreCase("True")) {
-            this.alive = true;
-        } else {
-            this.alive = false;
-        }
-        if (separa[17 + c + c3].equalsIgnoreCase("True")) {
-            this.wizard = true;
-        } else {
-            this.wizard = false;
-        }
+            if (separa[7 + c].equalsIgnoreCase("True")) {
+                this.hogwartsStaff = true;
+            } else {
+                this.hogwartsStaff = false;
+            }
+            if (separa[8 + c].equalsIgnoreCase("True")) {
+                this.hogwartsStudent = true;
+            } else {
+                this.hogwartsStudent = false;
+            }
+            if (separa[10 + c].equalsIgnoreCase("True")) {
+                this.alive = true;
+            } else {
+                this.alive = false;
+            }
+            if (separa[17 + c + c3].equalsIgnoreCase("True")) {
+                this.wizard = true;
+            } else {
+                this.wizard = false;
+            }
 
-        this.actorName = separa[9 + c];
-        this.alternate_names = atores.split("'");
-        this.alternate_actors = atores2.split(" ");
-        this.dateOfBirth = separa[12 + c + c3];
-        if (isNumber(separa[13 + c + c3])) {
-            this.yearOfBirth = Integer.parseInt(separa[13 + c + c3]);
-        } else {
-            this.yearOfBirth = 0000;
+            this.actorName = separa[9 + c];
+            this.alternate_names = atores.split("'");
+            this.alternate_actors = atores2.split(" ");
+            this.dateOfBirth = separa[12 + c + c3];
+            if (isNumber(separa[13 + c + c3])) {
+                this.yearOfBirth = Integer.parseInt(separa[13 + c + c3]);
+            } else {
+                this.yearOfBirth = 0000;
+            }
+            this.eyeColour = separa[14 + c + c3];
+            this.gender = separa[15 + c + c3];
+            this.hairColour = separa[16 + c + c3];
+
+            // System.out.println("ok");
         }
-        this.eyeColour = separa[14 + c + c3];
-        this.gender = separa[15 + c + c3];
-        this.hairColour = separa[16 + c + c3];
-
-        // System.out.println("ok");
-
     }
 
     public void imprimir() {
@@ -423,7 +427,7 @@ class Lista {
     public Personagem pesquisarP(String x) {
         Personagem retorno = new Personagem();
         if (x != null) {
-            for (int i = 0; i < n ; i++) {
+            for (int i = 0; i < n; i++) {
                 if (array[i].getId() != null) {
                     if (((array[i].getId()).equals(x))) {
                         retorno = array[i];
