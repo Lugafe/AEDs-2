@@ -1,6 +1,9 @@
+package TP2;
 import java.io.IOException;
 import java.io.File;
 import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 
 public class Q5TP2 {
    public static void main(String[] args) throws Exception {
@@ -27,8 +30,8 @@ public class Q5TP2 {
    }
 
    public static Lista arquivo() throws Exception {
-      File file = new File("characters.csv");
-      //File file = new File("/tmp/characters.csv");
+      //File file = new File("characters.csv");
+      File file = new File("/tmp/characters.csv");
       Lista personagens = new Lista();
       Personagem p = new Personagem();
       String line;
@@ -51,7 +54,7 @@ public class Q5TP2 {
 class Personagem {
    private String id;
    private String name;
-   private String alternate_names[];
+   private String alternate_names;
    private String house;
    private String ancestry;
    private String species;
@@ -60,9 +63,9 @@ class Personagem {
    private boolean hogwartsStudent;
    private String actorName;
    private boolean alive;
-   private String alternate_actors[];
-   private String dateOfBirth;
-   private int yearOfBirth;
+   private String alternate_actors;
+   private LocalDate dateOfBirth;
+   private String yearOfBirth;
    private String eyeColour;
    private String gender;
    private String hairColour;
@@ -73,105 +76,54 @@ class Personagem {
    // ,actorName,alive,alternate_actors,dateOfBirth,yearOfBirth,eyeColour,gender,hairColour,wizard
 
    public void ler(String line) {
-      int c = 0;
-      int c2 = 0;
-      int c3 = 0;
-      boolean ok = true;
-      boolean ok2 = true;
-      String atores = "";
-      String atores2 = "";
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-M-yyyy");
+
       if (line.equalsIgnoreCase("FIM")) {
          System.out.println("oh hell nah");
       }
       // separar a linha
       String separa[] = line.split(";");
-      for (int i = 0; i < separa.length - 1; i++) {
-         if (separa[i].length() > 0 && separa[i].charAt(1) == '[') {
-            while (ok) {
-               for (int j = 0; j < separa[i].length(); j++) {
-                  atores += separa[i].charAt(j);
-                  if (separa[i].charAt(j) == ']') {
-                     ok = false;
-                     break;
-                  }
-               }
-               c++;
-               i++;
-            }
-            // indica que passou pelo primeiro e agora o proximo pode definir os atores
-            ok2 = true;
-            c2 = i;
-         }
-      }
-      if (ok2) {
-         ok = true;
-         for (int i = c2; i < separa.length - 1; i++) {
-            if (separa[i].length() > 0 && separa[i].charAt(1) == '[') {
-               while (ok) {
-                  for (int j = 0; j < separa[i].length(); j++) {
-                     atores2 += separa[i].charAt(j);
-                     if (separa[i].charAt(j) == ']') {
-                        ok = false;
-                        break;
-                     }
-                  }
-                  c3++;
-                  i++;
-               }
-            }
-         }
-      }
+      String arruma = separa[2].replace("[", "{").replace("]", "}").replace("'", "");
 
-      if (c != 0) {
-         c--;
-      }
-      if (c3 != 0) {
-         c--;
-      }
+      separa[2] = arruma;
       this.id = separa[0];
       this.name = separa[1];
-      // System.out.println(atores);
-      // System.out.println(atores2);
-      this.house = separa[3 + c];
-      this.ancestry = separa[4 + c];
-      this.species = separa[5 + c];
-      this.patronus = separa[6 + c];
-
-      if (separa[7 + c].equalsIgnoreCase("VERDADEIRO")) {
+      this.alternate_names = separa[2];
+      this.house = separa[3];
+      this.ancestry = separa[4];
+      this.species = separa[5];
+      this.patronus = separa[6];
+      if (separa[7].equalsIgnoreCase("VERDADEIRO")) {
          this.hogwartsStaff = true;
       } else {
          this.hogwartsStaff = false;
       }
-      if (separa[8 + c].equalsIgnoreCase("VERDADEIRO")) {
+      if (separa[8].equalsIgnoreCase("VERDADEIRO")) {
          this.hogwartsStudent = true;
       } else {
          this.hogwartsStudent = false;
       }
-      if (separa[10 + c].equalsIgnoreCase("VERDADEIRO")) {
+      if (separa[10].equalsIgnoreCase("VERDADEIRO")) {
          this.alive = true;
       } else {
          this.alive = false;
       }
-      if (separa[17 + c + c3].equalsIgnoreCase("VERDADEIRO")) {
+      if (separa[17].equalsIgnoreCase("VERDADEIRO")) {
          this.wizard = true;
       } else {
          this.wizard = false;
       }
-
-      this.actorName = separa[9 + c];
-      this.alternate_names = atores.split("'");
-      this.alternate_actors = atores2.split(" ");
-      this.dateOfBirth = separa[12];
-      if (isNumber(separa[13])) {
-         this.yearOfBirth = Integer.parseInt(separa[13]);
-      } else {
-         this.yearOfBirth = 0000;
+      this.actorName = separa[9];
+      this.alternate_actors = "";
+      if (separa[12].charAt(1) >= '0' && separa[12].charAt(1) <= '9') {
+         LocalDate data = LocalDate.parse(separa[12], formatter);
+         this.dateOfBirth = data;
       }
+
+      this.yearOfBirth = separa[13];
       this.eyeColour = separa[14];
       this.gender = separa[15];
       this.hairColour = separa[16];
-
-      // System.out.println("ok");
 
    }
 
@@ -180,38 +132,28 @@ class Personagem {
    // human ## stag ## false ## false ## Daniel Radcliffe ## false ## 31-07-1980 ##
    // 1980 ## green ## male ## black ## false]
    public void imprimir() {
-      String nomes = nomeacao(this.alternate_names);
-      String atores = nomeacao(this.alternate_actors);
-      System.out.println("[" + this.id + " ## " + this.name + " ## {" + nomes + "} ## " + this.house + " ## "
-            + this.ancestry + " ## " + this.species + " ## " + this.patronus + " ## false ## false ## " + this.actorName
-            + " ## false ## " + this.dateOfBirth + " ## " + this.yearOfBirth + " ## " + this.eyeColour + " ## "
-            + this.gender + " ## " + this.hairColour + " ## "+this.wizard+"]");
+      String datas = arruma(this.dateOfBirth);
+      // String atores = nomeacao(this.alternate_actors);
+      System.out
+            .println("[" + this.id + " ## " + this.name + " ## " + this.alternate_names + " ## " + this.house + " ## "
+                  + this.ancestry + " ## " + this.species + " ## " + this.patronus + " ## " + this.hogwartsStaff
+                  + " ## " + this.hogwartsStudent + " ## " + this.actorName
+                  + " ## " + this.alive + " ## " + datas + " ## " + this.yearOfBirth + " ## "
+                  + this.eyeColour + " ## "
+                  + this.gender + " ## " + this.hairColour + " ## " + this.wizard + "]");
    }
 
-   private String nomeacao(String[] str) {
-      String nova = "";
-      for (int i = 0; i < str.length; i++) {
-         if (i % 2 != 0) {
-            if (i == 1) {
-               nova += str[i] + ",";
-            } else if (i == str.length - 2) {
-               nova += " " + str[i];
-            } else {
-               nova += " " + str[i] + ",";
-            }
-         }
-      }
-
-      return nova;
-   }
-
-   private boolean isNumber(String string) {
-      for (int i = 0; i < string.length(); i++) {
-         if (string.charAt(i) >= '0' && string.charAt(i) <= '9') {
-            return true;
-         }
-      }
-      return false;
+   private String arruma(LocalDate d) {
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataString = d.format(formatter);
+        return dataString.replace("/","-");
+        /* 
+        String[] nova = dataString.split("/");
+        String aux = nova[0];
+        nova[0] = nova[2];
+        nova[2] = aux;
+        return String.join("-", nova);
+        */
    }
 
    public String getId() {
@@ -230,11 +172,11 @@ class Personagem {
       this.name = name;
    }
 
-   public String[] getAlternate_names() {
+   public String getAlternate_names() {
       return alternate_names;
    }
 
-   public void setAlternate_names(String alternate_names[]) {
+   public void setAlternate_names(String alternate_names) {
       this.alternate_names = alternate_names;
    }
 
@@ -302,27 +244,27 @@ class Personagem {
       this.alive = alive;
    }
 
-   public String[] getAlternate_actors() {
+   public String getAlternate_actors() {
       return alternate_actors;
    }
 
-   public void setAlternate_actors(String alternate_actors[]) {
+   public void setAlternate_actors(String alternate_actors) {
       this.alternate_actors = alternate_actors;
    }
 
-   public String getDateOfBirth() {
+   public LocalDate getDateOfBirth() {
       return dateOfBirth;
    }
 
-   public void setDateOfBirth(String dateOfBirth) {
+   public void setDateOfBirth(LocalDate dateOfBirth) {
       this.dateOfBirth = dateOfBirth;
    }
 
-   public int getYearOfBirth() {
+   public String getYearOfBirth() {
       return yearOfBirth;
    }
 
-   public void setYearOfBirth(int yearOfBirth) {
+   public void setYearOfBirth(String yearOfBirth) {
       this.yearOfBirth = yearOfBirth;
    }
 

@@ -1,8 +1,9 @@
 import java.io.IOException;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 
 public class Teste {
    public static void main(String[] args) throws Exception {
@@ -63,7 +64,7 @@ class Personagem {
    private String actorName;
    private boolean alive;
    private String alternate_actors;
-   private String dateOfBirth;
+   private LocalDate dateOfBirth;
    private String yearOfBirth;
    private String eyeColour;
    private String gender;
@@ -75,21 +76,18 @@ class Personagem {
    // ,actorName,alive,alternate_actors,dateOfBirth,yearOfBirth,eyeColour,gender,hairColour,wizard
 
    public void ler(String line) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-M-yyyy"); 
-     
-   
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-M-yyyy");
+
       if (line.equalsIgnoreCase("FIM")) {
          System.out.println("oh hell nah");
       }
       // separar a linha
-      String separa[] = line.split(";");      
-        String arruma = separa[2].replace("[", "{").replace("]", "}").replace("'", "");
-        separa[2] = arruma;
-      
+      String separa[] = line.split(";");
+      String arruma = separa[2].replace("[", "{").replace("]", "}").replace("'", "");
 
-     
+      separa[2] = arruma;
       this.id = separa[0];
-      this.name = separa[1];      
+      this.name = separa[1];
       this.alternate_names = separa[2];
       this.house = separa[3];
       this.ancestry = separa[4];
@@ -115,16 +113,17 @@ class Personagem {
       } else {
          this.wizard = false;
       }
-
       this.actorName = separa[9];
       this.alternate_actors = "";
-      String dataNascimentoFormatada = this.dateOfBirth.format(formatter);
-      this.dateOfBirth = dataNascimentoFormatada;      
-      this.yearOfBirth = separa[13];     
+      if (separa[12].charAt(1) >= '0' && separa[12].charAt(1) <= '9') {
+         LocalDate data = LocalDate.parse(separa[12], formatter);
+         this.dateOfBirth = data;
+      }
+
+      this.yearOfBirth = separa[13];
       this.eyeColour = separa[14];
       this.gender = separa[15];
       this.hairColour = separa[16];
-      // System.out.println("ok");
 
    }
 
@@ -133,38 +132,28 @@ class Personagem {
    // human ## stag ## false ## false ## Daniel Radcliffe ## false ## 31-07-1980 ##
    // 1980 ## green ## male ## black ## false]
    public void imprimir() {
-      //String nomes = nomeacao(this.alternate_names);
-      //String atores = nomeacao(this.alternate_actors);
-      System.out.println("[" + this.id + " ## " + this.name + " ## " + this.alternate_names + " ## " + this.house + " ## "
-            + this.ancestry + " ## " + this.species + " ## " + this.patronus + " ## "+this.hogwartsStaff+" ## "+this.hogwartsStudent+" ## " + this.actorName
-            + " ## "+this.alive+" ## " + this.dateOfBirth + " ## " + this.yearOfBirth + " ## " + this.eyeColour + " ## "
-            + this.gender + " ## " + this.hairColour + " ## "+this.wizard+"]");
+      String datas = arruma(this.dateOfBirth);
+      // String atores = nomeacao(this.alternate_actors);
+      System.out
+            .println("[" + this.id + " ## " + this.name + " ## " + this.alternate_names + " ## " + this.house + " ## "
+                  + this.ancestry + " ## " + this.species + " ## " + this.patronus + " ## " + this.hogwartsStaff
+                  + " ## " + this.hogwartsStudent + " ## " + this.actorName
+                  + " ## " + this.alive + " ## " + datas + " ## " + this.yearOfBirth + " ## "
+                  + this.eyeColour + " ## "
+                  + this.gender + " ## " + this.hairColour + " ## " + this.wizard + "]");
    }
 
-   private String nomeacao(String[] str) {
-      String nova = "";
-      for (int i = 0; i < str.length; i++) {
-         if (i % 2 != 0) {
-            if (i == 1) {
-               nova += str[i] + ",";
-            } else if (i == str.length - 2) {
-               nova += " " + str[i];
-            } else {
-               nova += " " + str[i] + ",";
-            }
-         }
-      }
-
-      return nova;
-   }
-
-   private boolean isNumber(String string) {
-      for (int i = 0; i < string.length(); i++) {
-         if (string.charAt(i) >= '0' && string.charAt(i) <= '9') {
-            return true;
-         }
-      }
-      return false;
+   private String arruma(LocalDate d) {
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataString = d.format(formatter);
+        return dataString.replace("/","-");
+        /* 
+        String[] nova = dataString.split("/");
+        String aux = nova[0];
+        nova[0] = nova[2];
+        nova[2] = aux;
+        return String.join("-", nova);
+        */
    }
 
    public String getId() {
@@ -263,11 +252,11 @@ class Personagem {
       this.alternate_actors = alternate_actors;
    }
 
-   public String getDateOfBirth() {
+   public LocalDate getDateOfBirth() {
       return dateOfBirth;
    }
 
-   public void setDateOfBirth(String dateOfBirth) {
+   public void setDateOfBirth(LocalDate dateOfBirth) {
       this.dateOfBirth = dateOfBirth;
    }
 
@@ -325,8 +314,10 @@ class Lista {
    }
 
    public void selecao() {
+      int qRepeticoes = 0, nMovimentacoes = 0;
       Personagem p = new Personagem();
       for (int i = 0; i < array.length; i++) {
+         qRepeticoes++;
          if (array[i] != null) {
             for (int j = 0; j < array.length; j++) {
                if (array[j] != null) {
@@ -334,11 +325,19 @@ class Lista {
                      p = array[j];
                      array[j] = array[i];
                      array[i] = p;
+                     nMovimentacoes+=3;
                   }
                }
             }
          }
       }
+      try (FileWriter myWriter = new FileWriter("793599_selecao.txt")) {
+         myWriter.write("788060\t" + System.currentTimeMillis() + "\t" + qRepeticoes + "\t" + nMovimentacoes);
+         myWriter.close();
+     } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     }
    }
 
    /**

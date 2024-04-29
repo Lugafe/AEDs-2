@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.File;
 import java.util.*;
 
-public class J2 {
+public class Q3TP2 {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
