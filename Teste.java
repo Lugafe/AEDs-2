@@ -25,7 +25,7 @@ public class Teste {
             s = sc.nextLine();
          }
       } while (!s.equalsIgnoreCase("FIM"));
-      personagens2.selecao();
+      personagens2.insercao();
       personagens2.mostrar();
    }
 
@@ -127,10 +127,6 @@ class Personagem {
 
    }
 
-   // [9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8 ## Harry Potter ## {The Boy Who Lived,
-   // The Chosen One, Undesirable No. 1, Potty} ## Gryffindor ## half-blood ##
-   // human ## stag ## false ## false ## Daniel Radcliffe ## false ## 31-07-1980 ##
-   // 1980 ## green ## male ## black ## false]
    public void imprimir() {
       String datas = arruma(this.dateOfBirth);
       // String atores = nomeacao(this.alternate_actors);
@@ -143,17 +139,11 @@ class Personagem {
                   + this.gender + " ## " + this.hairColour + " ## " + this.wizard + "]");
    }
 
-   private String arruma(LocalDate d) {
+   public String arruma(LocalDate d) {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String dataString = d.format(formatter);
-        return dataString.replace("/","-");
-        /* 
-        String[] nova = dataString.split("/");
-        String aux = nova[0];
-        nova[0] = nova[2];
-        nova[2] = aux;
-        return String.join("-", nova);
-        */
+      String dataString = d.format(formatter);
+      return dataString.replace("/", "-");
+
    }
 
    public String getId() {
@@ -313,31 +303,32 @@ class Lista {
       this(500);
    }
 
-   public void selecao() {
+   public void insercao() {
       int qRepeticoes = 0, nMovimentacoes = 0;
       Personagem p = new Personagem();
-      for (int i = 0; i < array.length; i++) {
+      for (int i = 1; i < n; i++) {
          qRepeticoes++;
-         if (array[i] != null) {
-            for (int j = 0; j < array.length; j++) {
-               if (array[j] != null) {
-                  if (array[i].getName().compareTo(array[j].getName()) < 0) {
-                     p = array[j];
-                     array[j] = array[i];
-                     array[i] = p;
-                     nMovimentacoes+=3;
-                  }
-               }
-            }
+         Personagem tmp = array[i];
+         int j = i - 1;
+         String arruma1 = array[j].arruma(array[j].getDateOfBirth());String arruma2 = tmp.arruma(tmp.getDateOfBirth());
+         if (((array[j].arruma((array[j].getDateOfBirth()))).compareTo(tmp.arruma(tmp.getDateOfBirth())) == 0 )) {
+            
          }
+         while ((j >= 0) && ((array[j].arruma((array[j].getDateOfBirth()))).compareTo(tmp.arruma(tmp.getDateOfBirth())) < 0 )) {
+            array[j + 1] = array[j];
+            j--;
+            nMovimentacoes+=2;
+         }
+         array[j + 1] = tmp;nMovimentacoes++;
       }
-      try (FileWriter myWriter = new FileWriter("793599_selecao.txt")) {
+
+      try (FileWriter myWriter = new FileWriter("793599_insercao.txt")) {
          myWriter.write("788060\t" + System.currentTimeMillis() + "\t" + qRepeticoes + "\t" + nMovimentacoes);
          myWriter.close();
-     } catch (IOException e) {
+      } catch (IOException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
-     }
+      }
    }
 
    /**
