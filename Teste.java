@@ -30,7 +30,7 @@ public class Teste {
    }
 
    public static Lista arquivo() throws Exception {
-      //File file = new File("characters.csv");
+      // File file = new File("characters.csv");
       File file = new File("/tmp/characters.csv");
       Lista personagens = new Lista();
       Personagem p = new Personagem();
@@ -303,33 +303,22 @@ class Lista {
       this(500);
    }
 
-   public void insercao() {
-      int qRepeticoes = 0, nMovimentacoes = 0;
-      Personagem p = new Personagem();
-      for (int i = 1; i < n; i++) {
-         qRepeticoes++;
-         Personagem tmp = array[i];
-         int j = i - 1;
-         String arruma1 = array[j].arruma(array[j].getDateOfBirth());String arruma2 = tmp.arruma(tmp.getDateOfBirth());
-         if (((array[j].arruma((array[j].getDateOfBirth()))).compareTo(tmp.arruma(tmp.getDateOfBirth())) == 0 )) {
-            
-         }
-         while ((j >= 0) && ((array[j].arruma((array[j].getDateOfBirth()))).compareTo(tmp.arruma(tmp.getDateOfBirth())) < 0 )) {
-            array[j + 1] = array[j];
-            j--;
-            nMovimentacoes+=2;
-         }
-         array[j + 1] = tmp;nMovimentacoes++;
-      }
-
-      try (FileWriter myWriter = new FileWriter("793599_insercao.txt")) {
-         myWriter.write("788060\t" + System.currentTimeMillis() + "\t" + qRepeticoes + "\t" + nMovimentacoes);
-         myWriter.close();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-   }
+  public void insercao(){
+   for (int i = 1; i < array.length; i++) { 
+		
+		int j = i;
+	
+		while (j > 0 && array[j].getDateOfBirth().compareTo(array[j-1].getDateOfBirth()) > 0) {
+			Personagem aux = array[j];
+			array[j] = array[j - 1];
+			array[j - 1] = aux;
+			j -= 1;
+		}
+	
+	}	
+  }
+   
+   
 
    /**
     * Construtor da classe.
