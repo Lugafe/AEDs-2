@@ -1,3 +1,5 @@
+package TP2;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -5,7 +7,7 @@ import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
-public class Teste {
+public class Q11TP2 {
    public static void main(String[] args) throws Exception {
       Scanner sc = new Scanner(System.in);
       Lista personagens = new Lista();
@@ -25,7 +27,7 @@ public class Teste {
             s = sc.nextLine();
          }
       } while (!s.equalsIgnoreCase("FIM"));
-      personagens2.sort();
+      personagens2.countingsort();
       personagens2.mostrar();
    }
 
@@ -304,50 +306,61 @@ class Lista {
       this(500);
    }
 
-   public void sort() {
-      mergesort(0, n-1);
+   void countingsort() {
+      int maior = Integer.parseInt(array[0].getYearOfBirth());
+      for (int i = 0; i < n; i++) {
+         if (maior < Integer.parseInt(array[i].getYearOfBirth())) {
+            maior = Integer.parseInt(array[i].getYearOfBirth());
+         }
+      }
+      // Array para contar o numero de ocorrencias de cada elemento
+      int[] count = new int[maior + 1];
+      Personagem[] ordenado = new Personagem[n];
+      // Inicializar cada posicao do array de contagem
+      for (int i = 0; i < count.length; count[i] = 0, i++)
+         ;
+      // Agora, o count[i] contem o numero de elemento iguais a i
+      for (int i = 0; i < n; count[Integer.parseInt(array[i].getYearOfBirth())]++, i++)
+         ;
+      // Agora, o count[i] contem o numero de elemento menores ou iguais a i
+      for (int i = 1; i < count.length; count[i] += count[i - 1], i++)
+         ;
+      // Ordenando
+      for (int i = n - 1; i >= 0; ordenado[count[Integer.parseInt(array[i].getYearOfBirth())]
+            - 1] = array[i], count[Integer.parseInt(array[i].getYearOfBirth())]--, i--)
+         ;
+      Personagem p = new Personagem();
+      for (int i = 0; i < ordenado.length; i++) {
+         if (ordenado[i] != null) {
+            for (int j = 0; j < ordenado.length; j++) {
+               if (ordenado[j] != null) {
+                  if (compara(ordenado[i], ordenado[j]) > 0) {
+                     p = ordenado[j];
+                     ordenado[j] = ordenado[i];
+                     ordenado[i] = p;
+                  }
+               }
+            }
+         }
+      }
+
    }
 
-   private void mergesort(int esq, int dir) {
-      if (esq < dir){
-         int meio = (esq + dir) / 2;         
-         mergesort(esq, meio);
-         mergesort(meio + 1, dir);
-         intercalar(esq, meio, dir);
+   /**
+    * Retorna o maior elemento do array.
+    * 
+    * @return maior elemento
+    */
+   public int getMaior() {
+      int maior = Integer.parseInt(array[0].getYearOfBirth());
+
+      for (int i = 0; i < n; i++) {
+         if (maior < Integer.parseInt(array[i].getYearOfBirth())) {
+            maior = Integer.parseInt(array[i].getYearOfBirth());
+         }
       }
+      return maior;
    }
-
-   
-   public void intercalar(int esq, int meio, int dir){
-      int n1, n2, i, j, k;
-
-      //Definir tamanho dos dois subarrays
-      n1 = meio-esq+1;
-      n2 = dir - meio;
-
-      Personagem[] a1 = new Personagem[n1+1];
-      Personagem[] a2 = new Personagem[n2+1];
-
-      //Inicializar primeiro subarray
-      for(i = 0; i < n1; i++){
-         a1[i] = array[esq+i];
-      }
-
-      //Inicializar segundo subarray
-      for(j = 0; j < n2; j++){
-         a2[j] = array[meio+j+1];
-      }
-
-      //Sentinela no final dos dois arrays
-      a1[i] = a2[j] = null;
-
-      //Intercalacao propriamente dita
-      for(i = j = 0, k = esq; k <= dir; k++){
-         array[k] = (compara(a1[i],a2[j]) <= 0) ? a1[i++] : a2[j++];
-      }
-   }
-
-   
 
    private void log(int qRepeticoes, int nMovimentacoes) {
       try (FileWriter myWriter = new FileWriter("793599_countingsort.txt")) {
@@ -360,7 +373,7 @@ class Lista {
    }
 
    private int compara(Personagem j, Personagem tmp) {
-      int valor = j.getActorName().compareTo(tmp.getActorName());
+      int valor = j.getYearOfBirth().compareTo(tmp.getYearOfBirth());
       return valor != 0 ? valor : j.getName().compareTo(tmp.getName());
    }
 
