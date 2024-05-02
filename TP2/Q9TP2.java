@@ -1,3 +1,5 @@
+package TP2;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -5,7 +7,7 @@ import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
-public class Teste {
+public class Q9TP2 {
    public static void main(String[] args) throws Exception {
       Scanner sc = new Scanner(System.in);
       Lista personagens = new Lista();
@@ -25,12 +27,12 @@ public class Teste {
             s = sc.nextLine();
          }
       } while (!s.equalsIgnoreCase("FIM"));
-      personagens2.countingsort();
+      personagens2.heapsort();
       personagens2.mostrar();
    }
 
    public static Lista arquivo() throws Exception {
-      // File file = new File("characters.csv");
+      //File file = new File("characters.csv");
       File file = new File("/tmp/characters.csv");
       Lista personagens = new Lista();
       Personagem p = new Personagem();
@@ -304,64 +306,50 @@ class Lista {
       this(500);
    }
 
-   void countingsort() {
-      int maior = Integer.parseInt(array[0].getYearOfBirth());
-      for (int i = 0; i < n; i++) {
-         if (maior < Integer.parseInt(array[i].getYearOfBirth())) {
-            maior = Integer.parseInt(array[i].getYearOfBirth());
-         }
+   public void heapsort() {
+      int qRepeticoes = 0, nMovimentacoes = 0;
+      for (int i = n / 2 - 1; i >= 0; i--) {
+         aplicarHeap(n,i);
       }
-      // Array para contar o numero de ocorrencias de cada elemento
-      int[] count = new int[maior + 1];
-      Personagem[] ordenado = new Personagem[n];
-      // Inicializar cada posicao do array de contagem
-      for (int i = 0; i < count.length; count[i] = 0, i++)
-         ;
-      // Agora, o count[i] contem o numero de elemento iguais a i
-      for (int i = 0; i < n; count[Integer.parseInt(array[i].getYearOfBirth())]++, i++)
-         ;
-      // Agora, o count[i] contem o numero de elemento menores ou iguais a i
-      for (int i = 1; i < count.length; count[i] += count[i - 1], i++)
-         ;
-      // Ordenando
-      for (int i = n - 1; i >= 0; ordenado[count[Integer.parseInt(array[i].getYearOfBirth())]
-            - 1] = array[i], count[Integer.parseInt(array[i].getYearOfBirth())]--, i--)
-         ;
-      Personagem p = new Personagem();
-      for (int i = 0; i < ordenado.length; i++) {
-         if (ordenado[i] != null) {
-            for (int j = 0; j < ordenado.length; j++) {
-               if (ordenado[j] != null) {
-                  if (compara(ordenado[i], ordenado[j]) > 0) {
-                     p = ordenado[j];
-                     ordenado[j] = ordenado[i];
-                     ordenado[i] = p;
-                  }
-               }
-            }
-         }
+      for (int j = n+1; j > 0; j--) {
+         Personagem aux = array[0];
+         array[0]=array[j];
+         array[j]=aux;
+
+         aplicarHeap(j,0);
       }
 
+      log(qRepeticoes, nMovimentacoes);
    }
 
-   /**
-    * Retorna o maior elemento do array.
-    * 
-    * @return maior elemento
-    */
-   public int getMaior() {
-      int maior = Integer.parseInt(array[0].getYearOfBirth());
-
-      for (int i = 0; i < n; i++) {
-         if (maior < Integer.parseInt(array[i].getYearOfBirth())) {
-            maior = Integer.parseInt(array[i].getYearOfBirth());
+   private void aplicarHeap(int n, int i) {
+      int raiz = i;
+      int esquerda = 2 * i + 1;
+      int direita = 2 * i + 2;
+      if (array[esquerda] != null && array[raiz] != null) {
+         if (esquerda < n && teste1(array[esquerda],array[raiz]) > 0) {
+            raiz = esquerda;            
          }
       }
-      return maior;
+      if (array[direita] != null && array[raiz] != null) {
+         if (direita < n && teste1(array[direita],array[raiz]) > 0) {
+            raiz = direita;
+         }
+      }
+      if (raiz != i) {
+         Personagem aux = array[i];
+         array[i] = array[raiz];
+         array[raiz] = aux;
+         aplicarHeap(n,raiz);
+      }
    }
-
+   private int teste1(Personagem j, Personagem tmp) {
+      int valor = j.getHairColour().compareTo(tmp.getHairColour());
+      return valor != 0 ? valor : j.getName().compareTo(tmp.getName());
+   
+   }
    private void log(int qRepeticoes, int nMovimentacoes) {
-      try (FileWriter myWriter = new FileWriter("793599_countingsort.txt")) {
+      try (FileWriter myWriter = new FileWriter("793599_heapsort.txt")) {
          myWriter.write("788060\t" + System.currentTimeMillis() + "\t" + qRepeticoes + "\t" + nMovimentacoes);
          myWriter.close();
       } catch (IOException e) {
@@ -371,8 +359,9 @@ class Lista {
    }
 
    private int compara(Personagem j, Personagem tmp) {
-      int valor = j.getYearOfBirth().compareTo(tmp.getYearOfBirth());
+      int valor = j.getDateOfBirth().compareTo(tmp.getDateOfBirth());
       return valor != 0 ? valor : j.getName().compareTo(tmp.getName());
+
    }
 
    public Lista(int tamanho) {
@@ -393,7 +382,7 @@ class Lista {
 
    public void mostrar() {
       for (int i = 0; i < n; i++) {
-         if (array[i] != null) {
+         if(array[i] != null){
             array[i].imprimir();
          }
       }
@@ -438,3 +427,4 @@ class Lista {
       return retorno;
    }
 }
+
