@@ -30,8 +30,8 @@ public class Teste {
    }
 
    public static Lista arquivo() throws Exception {
-      //File file = new File("characters.csv");
-      File file = new File("/tmp/characters.csv");
+      File file = new File("characters.csv");
+      //File file = new File("/tmp/characters.csv");
       Lista personagens = new Lista();
       Personagem p = new Personagem();
       String line;
@@ -346,7 +346,7 @@ class Lista {
     if (i < n1 && (j >= n2 || compara(a1[i], a2[j]) > 0)) {
         array[p] = a1[i++];
     } else {
-        array[p] = a2[j++];
+         array[p] = a2[j++];
     }
 }
    }
