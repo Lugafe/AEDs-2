@@ -13,26 +13,31 @@ public class Teste {
       //String ids[] = new String[500];
       Lista personagens2 = new Lista();
       String s = "";
-      
+      int i = 0;
       personagens = arquivo();
       s = sc.nextLine();
       do {
          if (!s.equalsIgnoreCase("FIM")) {
-            p = personagens.pesquisarP(s);
-            personagens2.inserirFim(p);
-            p = new Personagem();
-            s = sc.nextLine();
-            
+            if (i == 0) {
+               p = personagens.pesquisarP(s);
+               personagens2.inserirInicio(p);
+               p = new Personagem();
+               s = sc.nextLine();
+               i++;            
+            }else{
+               p = personagens.pesquisarP(s);
+               personagens2.inserirFim(p);
+               p = new Personagem();
+               s = sc.nextLine();
+            }
          }
-      } while (!s.equalsIgnoreCase("FIM"));
-      personagens2.selecao();
-      personagens2.selecao();
+      } while (!s.equalsIgnoreCase("FIM"));      
       personagens2.mostrar();
    }
 
    public static Lista arquivo() throws Exception {
-      //File file = new File("characters.csv");
-      File file = new File("/tmp/characters.csv");
+      File file = new File("characters.csv");
+      //File file = new File("/tmp/characters.csv");
       Lista personagens = new Lista();
       Personagem p = new Personagem();
       //String line;
@@ -303,96 +308,66 @@ class Personagem {
 
 }
 
-class Lista {
-   private Personagem[] array;
-   private int n;
-
-   /**
-    * Construtor da classe.
-    */
-   public Lista() {
-      this(500);
+class Celula{
+   Personagem p;
+   Celula prox;
+   public Celula() {
+     this.p = new Personagem();
+     this.prox = null;
    }
-
-   public void selecao() {
-      Personagem p = new Personagem();
-      for (int i = 0; i < 10; i++) {
-         if (array[i] != null) {
-            for (int j = 0; j < array.length; j++) {
-               if (array[j] != null) {
-                  if (array[i].getName().compareTo(array[j].getName()) > 0) {
-                     p = array[j];
-                     array[j] = array[i];
-                     array[i] = p;
-                  }
-               }
-            }
-         }
-      }
-      
+   public Celula(Personagem p, Celula prox) {
+      this.p = p;
+      this.prox = prox;
    }
+   public Celula(Personagem p) {
+      this.p = p;
+      this.prox = null;
+   }
+   
 
    
-   public Lista(int tamanho) {
-      array = new Personagem[tamanho];
-      n = 0;
+}
+class Lista {
+   Celula primeiro, ultimo;
+
+   public Lista(Celula primeiro, Celula ultimo) {
+      this.primeiro = primeiro;
+      this.ultimo = ultimo;
    }
 
-   public void inserirFim(Personagem x) throws Exception {
-
-      // validar insercao
-      if (n >= array.length) {
-         throw new Exception("Erro ao inserir!");
-      }
-
-      array[n] = x;
-      n++;
+   public Lista() {
+      primeiro = new Celula();
+      ultimo = primeiro;
    }
 
-   public void mostrar() {
-      for (int i = 0; i < 10; i++) {
-         array[i].imprimir();
-      }
+   public void inserirInicio(Personagem p){
+      Celula tmp = new Celula(p);
+      tmp.prox = primeiro.prox;
+		primeiro.prox = tmp;
+		if (primeiro == ultimo) {                 
+			ultimo = tmp;
+		}
+      tmp = null;
    }
 
-   /**
-    * Procura um elemento e retorna se ele existe.
-    * 
-    * @param x int elemento a ser pesquisado.
-    * @return <code>true</code> se o array existir,
-    *         <code>false</code> em caso contrario.
-    */
-   public boolean pesquisar(Personagem x) {
-      boolean retorno = false;
-      for (int i = 0; i < n && retorno == false; i++) {
-         retorno = (array[i] == x);
-      }
-      return retorno;
+   public void inserirFim(Personagem p){
+      ultimo.prox = new Celula(p);
+      ultimo = ultimo.prox;
    }
 
-   public void pesquisarId(String x) {
-      boolean retorno = false;
-      int c = 0;
-      if (x != null) {
-         for (int i = 0; i < n && retorno == false; i++) {
-            if (array[i].getId() != null) {
-               retorno = ((array[i].getId()).equals(x));
-               c = i;
-            }
-         }
-         if (retorno) {
-            array[c].imprimir();
-         }
+   public void mostrar(){
+      for (Celula i = primeiro.prox; i != ultimo; i=i.prox) {
+         i.p.imprimir();
       }
    }
 
    public Personagem pesquisarP(String x) {
       Personagem retorno = new Personagem();
       if (x != null) {
-         for (int i = 0; i < n; i++) {
-            if (array[i].getId() != null) {
-               if (((array[i].getId()).equals(x))) {
-                  retorno = array[i];
+         for (Celula i = primeiro; i != ultimo; i = i.prox) {
+            if (i.p.getId() != null) {
+               if (((i.p.getId()).equals(x))) {
+                  retorno = i.p;
                }
             }
          }
