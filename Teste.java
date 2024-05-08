@@ -18,21 +18,47 @@ public class Teste {
       s = sc.nextLine();
       do {
          if (!s.equalsIgnoreCase("FIM")) {
+            p = personagens.pesquisarP(s);
             if (i == 0) {
-               p = personagens.pesquisarP(s);
-               personagens2.inserirInicio(p);
-               p = new Personagem();
-               s = sc.nextLine();
+               personagens2.inserirInicio(p);                              
                i++;            
             }else{
-               p = personagens.pesquisarP(s);
                personagens2.inserirFim(p);
-               p = new Personagem();
-               s = sc.nextLine();
             }
+            p = new Personagem();
+            s = sc.nextLine();
          }
-      } while (!s.equalsIgnoreCase("FIM"));      
+      } while (!s.equalsIgnoreCase("FIM"));   
+      int c = sc.nextInt();
+      for (int j = 0; j < c; j++) {
+         s = sc.nextLine();
+         String sp[] = s.split(" ");
+         switch (sp[0]) {
+            case "II":
+               personagens2.inserirInicio(personagens.pesquisarP(sp[1]));
+               break;
+            case "I*":
+               personagens2.inserir(personagens.pesquisarP(sp[2]),Integer.parseInt(sp[1]));
+               break;
+            case "IF":
+               personagens2.inserirFim(personagens.pesquisarP(sp[1]));
+               break;
+            case "RI":
+               personagens2.removerInicio();
+               break;
+            case "R*":
+               personagens2.remover(Integer.parseInt(sp[1]));
+               break;
+            case "RF":
+               personagens2.removerFim();
+               break;
+         
+            default:
+               break;
+         }
+      }    
       personagens2.mostrar();
+      sc.close();
    }
 
    public static Lista arquivo() throws Exception {
@@ -350,21 +376,69 @@ class Lista {
       tmp = null;
    }
 
+   
    public void inserirFim(Personagem p){
       ultimo.prox = new Celula(p);
       ultimo = ultimo.prox;
    }
 
+   public Personagem removerInicio(){
+      if (primeiro == ultimo) {
+         System.out.println("Lista vazia");
+         return null;
+      }
+      Celula tmp = primeiro;
+      primeiro = primeiro.prox;
+      Personagem per = tmp.p;
+      tmp.prox = null;
+      tmp = null;
+      return per;
+   }
+
+   public Personagem removerFim(){
+      if (primeiro == ultimo) {
+         System.out.println("Lista vazia");
+         return null;
+      }
+      Celula i;
+      for (i = primeiro; i != ultimo; i=i.prox);      
+      ultimo = i;
+      Personagem per = i.prox.p;
+      i = ultimo.prox = null;
+      return per;
+   }
+
+   public void inserir(Personagem p, int pos){
+      Celula i = primeiro;
+      for (int j = 0; j < pos; j++, i = i.prox);
+      Celula tmp = new Celula(p);
+      tmp.prox = i.prox;
+      i.prox = tmp;
+      tmp = i = null;
+   }
+
+   public Personagem remover(int pos){
+      Celula i = primeiro;
+      for (int j = 0; j < pos; j++, i = i.prox);
+      Celula tmp = i.prox;
+      Personagem resp = tmp.p;
+      i.prox = tmp.prox;
+      tmp.prox = null;
+      i = tmp = null;
+      return resp;
+   }
+
    public void mostrar(){
-      for (Celula i = primeiro.prox; i != ultimo; i=i.prox) {
+      for (Celula i = primeiro.prox; i != null; i=i.prox) {
          i.p.imprimir();
       }
    }
 
+
    public Personagem pesquisarP(String x) {
       Personagem retorno = new Personagem();
       if (x != null) {
-         for (Celula i = primeiro; i != ultimo; i = i.prox) {
+         for (Celula i = primeiro; i != null; i = i.prox) {
             if (i.p.getId() != null) {
                if (((i.p.getId()).equals(x))) {
                   retorno = i.p;
