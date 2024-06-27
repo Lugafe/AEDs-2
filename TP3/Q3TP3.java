@@ -1,48 +1,68 @@
+package TP3;
+
+
 
 import java.io.IOException;
 import java.io.File;
-import java.io.FileWriter;
 import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
-public class Teste {
+public class Q3TP3 {
+
    public static void main(String[] args) throws Exception {
       Scanner sc = new Scanner(System.in);
-      Lista personagens = new Lista();
+      Pilha personagens = new Pilha();
       Personagem p = new Personagem();
-      String ids[] = new String[500];
-      Lista personagens2 = new Lista();
+      // String ids[] = new String[500];
+      Pilha personagens2 = new Pilha();
       String s = "";
       int i = 0;
-      // recebe os valores dos ids
       personagens = arquivo();
       s = sc.nextLine();
       do {
          if (!s.equalsIgnoreCase("FIM")) {
-            p = personagens.pesquisarP(s);
-            personagens2.inserirFim(p);
+            personagens2.inserir(personagens.pesquisarP(s));
             p = new Personagem();
             s = sc.nextLine();
          }
       } while (!s.equalsIgnoreCase("FIM"));
-      personagens2.sort();
+      int c = sc.nextInt();
+      for (int j = 0; j <= c; j++) {
+         s = sc.nextLine();
+         String sp[] = s.split(" ");
+         switch (sp[0]) {
+            case "I":
+               personagens2.inserir(personagens.pesquisarP(sp[1]));
+               break;
+            case "R":
+            System.out.println("(R) " + personagens2.remover().getName());
+               break;
+
+            default:
+               break;
+         }
+      }
+
       personagens2.mostrar();
+      sc.close();
    }
 
-   public static Lista arquivo() throws Exception {
+   public static Pilha arquivo() throws Exception {
       // File file = new File("characters.csv");
       File file = new File("/tmp/characters.csv");
-      Lista personagens = new Lista();
+      Pilha personagens = new Pilha();
       Personagem p = new Personagem();
-      String line;
+      //int i = 0;
+      // String line;
       try {
          Scanner sc = new Scanner(file);
          while (sc.hasNextLine()) {
             p.ler(sc.nextLine());
-            personagens.inserirFim(p);
+            personagens.inserir(p);           
             p = new Personagem();
          }
+         //System.out.println("fim");
          sc.close();
       } catch (IOException e) {
          System.err.printf("%s: %s%n", e, e.getMessage());
@@ -53,6 +73,7 @@ public class Teste {
 }
 
 class Personagem {
+
    private String id;
    private String name;
    private String alternate_names;
@@ -128,11 +149,16 @@ class Personagem {
 
    }
 
-   public void imprimir() {
+   // [9e3f7ce4-b9a7-4244-b709-dae5c1f1d4a8 ## Harry Potter ## {The Boy Who Lived,
+   // The Chosen One, Undesirable No. 1, Potty} ## Gryffindor ## half-blood ##
+   // human ## stag ## false ## false ## Daniel Radcliffe ## false ## 31-07-1980 ##
+   // 1980 ## green ## male ## black ## false]
+   public void imprimir(int x) {
       String datas = arruma(this.dateOfBirth);
       // String atores = nomeacao(this.alternate_actors);
       System.out
-            .println("[" + this.id + " ## " + this.name + " ## " + this.alternate_names + " ## " + this.house + " ## "
+            .println("[" + x + " ## " + this.id + " ## " + this.name + " ## " + this.alternate_names + " ## "
+                  + this.house + " ## "
                   + this.ancestry + " ## " + this.species + " ## " + this.patronus + " ## " + this.hogwartsStaff
                   + " ## " + this.hogwartsStudent + " ## " + this.actorName
                   + " ## " + this.alive + " ## " + datas + " ## " + this.yearOfBirth + " ## "
@@ -140,11 +166,21 @@ class Personagem {
                   + this.gender + " ## " + this.hairColour + " ## " + this.wizard + "]");
    }
 
-   public String arruma(LocalDate d) {
+   private String arruma(LocalDate d) {
+      // String dataString = "";
+
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
       String dataString = d.format(formatter);
       return dataString.replace("/", "-");
 
+      // dataString;
+      /*
+       * String[] nova = dataString.split("/");
+       * String aux = nova[0];
+       * nova[0] = nova[2];
+       * nova[2] = aux;
+       * return String.join("-", nova);
+       */
    }
 
    public String getId() {
@@ -293,135 +329,79 @@ class Personagem {
 
 }
 
-class No {
-   int elemento;
-   No esq, dir;
-   int nivel;
+class Celula {
+   Personagem p;
+   Celula prox;
 
-   public No(int elemento) {
-      this(elemento, null, null, 1);
+   public Celula() {
+      this.p = new Personagem();
+      this.prox = null;
    }
 
-   public No(int x, No e, No d, int n) {
-      elemento = x;
-      esq = e;
-      dir = d;
-      nivel = n;
+   public Celula(Personagem p, Celula prox) {
+      this.p = p;
+      this.prox = prox;
    }
 
-   public int getNivel(No no) {
-      return (no == null) ? 0 : no.nivel;
-   }
-
-   public void setNivel() {
-      nivel = 1 + Math.max(getNivel(esq), getNivel(dir));
+   public Celula(Personagem p) {
+      this.p = p;
+      this.prox = null;
    }
 
 }
 
-class AVL {
-   No raiz;
+class Pilha {
+   Celula topo;
 
-   public AVL() {
-      raiz = null;
+   public Pilha(Celula p) {
+      topo = p;
    }
 
-   public void caminharCentral() {
-      caminharCentral(raiz);
+   public Pilha() {
+      topo = new Celula();
    }
 
-   public void caminharCentral(No i) {
-      if (i != null) {
-         caminharCentral(i.esq);
-         System.err.println(i.elemento + " " + i.nivel);
-         caminharCentral(i.dir);
+   public void inserir(Personagem p) {
+      Celula tmp = new Celula(p);
+      tmp.prox = topo.prox;
+      topo.prox = tmp;
+      tmp = null;
+   }
+
+   public Personagem remover() {
+      if (topo.prox == null) {
+         System.out.println("Pilha vazia");
+         return null;
       }
-   }
+      Personagem per = topo.prox.p;
+      Celula tmp = topo;
+      topo = topo.prox;
+      tmp.prox = null;
+      tmp = null;
+      return per;
+   }  
 
-   public boolean pesquisar(int x) {
-      return pesquisar(raiz, x);
-   }
-
-   private boolean pesquisar(No i, int x) {
-      boolean ok = false;
-      if (i == null) {
-         ok = false;
-      } else if (x < i.elemento) {
-         ok = pesquisar(i.esq, x);
-      } else if (x > i.elemento) {
-         ok = pesquisar(i.dir, x);
-      } else if (x == i.elemento) {
-         ok = true;
+   public void mostrar() {
+      int j = 0;
+      System.out.println("[ Top ]");
+      for (Celula i = topo.prox; i != null; j++, i = i.prox) {
+         i.p.imprimir(j);
       }
-      return ok;
+      System.out.println("[ Bottom ]");
    }
 
-   public void inserir(int x) {
-      raiz = inserir(raiz, x);
-   }
-
-   private No inserir(No i, int x) {
-      if (i == null) {
-         i = new No(x);
-      } else if (i.elemento > x) {
-         i.esq = inserir(i.esq, x);
-      } else if (i.elemento < x) {
-         i.dir = inserir(i.dir, x);
-      } else {
-         System.out.println("erro");
-      }
-      return balancear(i);
-   }
-
-   private No balancear(No no) {
-      if (no != null) {
-         int fator = no.getNivel(no.dir) - no.getNivel(no.esq);
-         if (Math.abs(fator) <= 1) {
-            no.setNivel();
-         } else if (fator == 2) {
-            int fatorFilhoDir = no.getNivel(no.dir.dir) - no.getNivel(no.dir.esq);
-
-            if (fatorFilhoDir == -1) {
-               no.dir = rotDir(no);
+   public Personagem pesquisarP(String x) {
+      Personagem retorno = new Personagem();
+      if (x != null) {
+         for (Celula i = topo.prox; i != null; i = i.prox) {
+            if (i.p.getId() != null) {
+               if (((i.p.getId()).equals(x))) {
+                  retorno = i.p;
+               }
             }
-            no = rotEsq(no);
-         } else if (fator == -2) {
-            int fatorFilhoEsq = no.getNivel(no.esq.dir) - no.getNivel(no.esq.esq);
-
-            if (fatorFilhoEsq == 1) {
-               no.esq = rotEsq(no);
-            }
-            no = rotDir(no);
-         } else {
-            System.out.println(" Erro ao balancear");
          }
+
       }
-      return no;
+      return retorno;
    }
-
-   private No rotEsq(No i) {
-      No noDir = i.dir;
-      No noDirEsq = noDir.esq;
-
-      noDir.esq = i;
-      i.dir = noDirEsq;
-
-      i.setNivel();
-      noDir.setNivel();
-      return noDir;
-   }
-
-   private No rotDir(No i) {
-      No noEsq = i.esq;
-      No noEsqDir = noEsq.dir;
-
-      noEsq.dir = i;
-      i.esq = noEsqDir;      
-      
-      i.setNivel();
-      noEsq.setNivel();
-      return noEsq;
-   }
-
 }
-

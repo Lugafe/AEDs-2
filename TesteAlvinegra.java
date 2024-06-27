@@ -6,7 +6,7 @@ import java.util.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
-public class Teste {
+public class TesteAlvinegra {
    public static void main(String[] args) throws Exception {
       Scanner sc = new Scanner(System.in);
       Lista personagens = new Lista();
@@ -293,135 +293,46 @@ class Personagem {
 
 }
 
-class No {
-   int elemento;
-   No esq, dir;
-   int nivel;
+class NoAN{
+    int elemento;
+    NoAN esq,dir;
+    boolean cor;
+    public NoAN() {
+        this(-1);
+    }
 
-   public No(int elemento) {
-      this(elemento, null, null, 1);
-   }
+    public NoAN(int x){
+        this(x,null,null,false);
+    }
 
-   public No(int x, No e, No d, int n) {
-      elemento = x;
-      esq = e;
-      dir = d;
-      nivel = n;
-   }
+    public NoAN(int elemento, boolean cor) {
+        this(elemento,null, null, cor);
+    }
 
-   public int getNivel(No no) {
-      return (no == null) ? 0 : no.nivel;
-   }
-
-   public void setNivel() {
-      nivel = 1 + Math.max(getNivel(esq), getNivel(dir));
-   }
-
+    public NoAN(int i, NoAN object, NoAN object2, boolean b) {
+        elemento = i;
+        esq = object;
+        dir = object2;
+        cor = b;
+    }
 }
 
-class AVL {
-   No raiz;
+class Alvinegra{
+    NoAN raiz;
 
-   public AVL() {
-      raiz = null;
-   }
+    public Alvinegra(){
+        raiz = null;
+    }
 
-   public void caminharCentral() {
-      caminharCentral(raiz);
-   }
+    public void inserir(){
+        raiz = inserir(raiz);
+    }
 
-   public void caminharCentral(No i) {
-      if (i != null) {
-         caminharCentral(i.esq);
-         System.err.println(i.elemento + " " + i.nivel);
-         caminharCentral(i.dir);
-      }
-   }
-
-   public boolean pesquisar(int x) {
-      return pesquisar(raiz, x);
-   }
-
-   private boolean pesquisar(No i, int x) {
-      boolean ok = false;
-      if (i == null) {
-         ok = false;
-      } else if (x < i.elemento) {
-         ok = pesquisar(i.esq, x);
-      } else if (x > i.elemento) {
-         ok = pesquisar(i.dir, x);
-      } else if (x == i.elemento) {
-         ok = true;
-      }
-      return ok;
-   }
-
-   public void inserir(int x) {
-      raiz = inserir(raiz, x);
-   }
-
-   private No inserir(No i, int x) {
-      if (i == null) {
-         i = new No(x);
-      } else if (i.elemento > x) {
-         i.esq = inserir(i.esq, x);
-      } else if (i.elemento < x) {
-         i.dir = inserir(i.dir, x);
-      } else {
-         System.out.println("erro");
-      }
-      return balancear(i);
-   }
-
-   private No balancear(No no) {
-      if (no != null) {
-         int fator = no.getNivel(no.dir) - no.getNivel(no.esq);
-         if (Math.abs(fator) <= 1) {
-            no.setNivel();
-         } else if (fator == 2) {
-            int fatorFilhoDir = no.getNivel(no.dir.dir) - no.getNivel(no.dir.esq);
-
-            if (fatorFilhoDir == -1) {
-               no.dir = rotDir(no);
-            }
-            no = rotEsq(no);
-         } else if (fator == -2) {
-            int fatorFilhoEsq = no.getNivel(no.esq.dir) - no.getNivel(no.esq.esq);
-
-            if (fatorFilhoEsq == 1) {
-               no.esq = rotEsq(no);
-            }
-            no = rotDir(no);
-         } else {
-            System.out.println(" Erro ao balancear");
-         }
-      }
-      return no;
-   }
-
-   private No rotEsq(No i) {
-      No noDir = i.dir;
-      No noDirEsq = noDir.esq;
-
-      noDir.esq = i;
-      i.dir = noDirEsq;
-
-      i.setNivel();
-      noDir.setNivel();
-      return noDir;
-   }
-
-   private No rotDir(No i) {
-      No noEsq = i.esq;
-      No noEsqDir = noEsq.dir;
-
-      noEsq.dir = i;
-      i.esq = noEsqDir;      
-      
-      i.setNivel();
-      noEsq.setNivel();
-      return noEsq;
-   }
+    private NoAN inserir(NoAN no) {
+        if (no!= null) {
+            
+        }        
+        return no;
+    }
 
 }
-
